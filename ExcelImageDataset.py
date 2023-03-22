@@ -29,7 +29,7 @@ if __name__ == '__main__':
     # file_path = r"C:\Users\sburk\PycharmProjects\GAN-artgen-vangogh-AIproject\archive\VanGoghPaintings.xlxs"
     # p = pd.read_excel(file_path)
 
-    dataset = ExcelImageDataset('C:\\Users\\sburk\\PycharmProjects\\GAN-artgen-vangogh-AIproject\\archive\\VanGoghSample.xlsx', 'image_path', transform=transforms.Compose([
+    dataset = ExcelImageDataset('C:\\Users\\sburk\\PycharmProjects\\archive\\VanGoghPaintings.xlsx', 'image_path', transform=transforms.Compose([
         transforms.Resize(64),
         transforms.CenterCrop(64),
         transforms.ToTensor(),
