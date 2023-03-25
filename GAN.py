@@ -81,7 +81,7 @@ class ExcelImageDataset(Dataset):
 
 
 # Load the dataset using the ExcelImageDataset class
-dataset = ExcelImageDataset('C:\\Users\\sburk\\PycharmProjects\\archive\\VanGoghPaintings.xlsx', 'image_path', transform=transforms.Compose([
+dataset = ExcelImageDataset('C:\\Users\\Isaiah\\PycharmProjects\\Archive\\VanGoghPaintings.xlsx', 'image_path', transform=transforms.Compose([
     transforms.Resize(64),
     transforms.CenterCrop(64),
     transforms.ToTensor(),
@@ -131,5 +131,5 @@ for epoch in range(5): # 200 og number of epochs
         # Save generated images
        # if epoch % 20 == 0 and i == 0:
         if i % 100 == 0:
-            save_image(fake_images.data[:10], f"C:\\Users\\sburk\\PycharmProjects\\GAN-artgen-vangogh-AIproject\\image_output\\{epoch}.png", nrow=5, normalize=True)
+            save_image(fake_images.data[:10], f"C:\\Users\\Isaiah\\PycharmProjects\\GAN-VanGogh-ArtGen-AIproject\\image_output\\{epoch}.png", nrow=5, normalize=True)
 
