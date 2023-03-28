@@ -7,6 +7,7 @@ from torchvision.utils import save_image
 from PIL import Image
 import pandas as pd
 import os
+import datetime
 
 # Define the generator network
 class Generator(nn.Module):
@@ -28,6 +29,7 @@ class Generator(nn.Module):
         img = self.model(z)
         img = img.view(img.size(0), 3, 64, 64)
         return img
+
 
 # Define the discriminator network
 class Discriminator(nn.Module):
@@ -52,6 +54,47 @@ class Discriminator(nn.Module):
         img = img.view(img.size(0), -1)
         validity = self.model(img)
         return validity
+
+# class Generator(nn.Module):
+#     def __init__(self):
+#         super(Generator, self).__init__()
+#
+#         self.model = nn.Sequential(
+#             nn.Linear(100, 256),
+#             nn.LeakyReLU(0.2),
+#             nn.Linear(256, 512),
+#             nn.LeakyReLU(0.2),
+#             nn.Linear(512, 1024),
+#             nn.LeakyReLU(0.2),
+#             nn.Linear(1024, 3 * 32 * 32),  # 32x32 output image size
+#             nn.Tanh()
+#         )
+#
+#     def forward(self, z):
+#         img = self.model(z)
+#         img = img.view(img.size(0), 3, 32, 32)  # reshape to 3-channel image
+#         return img
+#
+#
+# class Discriminator(nn.Module):
+#     def __init__(self):
+#         super(Discriminator, self).__init__()
+#
+#         self.model = nn.Sequential(
+#             nn.Linear(3 * 32 * 32, 512),
+#             nn.LeakyReLU(0.2),
+#             nn.Dropout(0.3),
+#             nn.Linear(512, 256),
+#             nn.LeakyReLU(0.2),
+#             nn.Dropout(0.3),
+#             nn.Linear(256, 1),
+#             nn.Sigmoid()
+#         )
+#
+#     def forward(self, img):
+#         img = img.view(img.size(0), -1)
+#         validity = self.model(img)
+#         return validity
 
 # Initialize the networks
 generator = Generator()
@@ -88,11 +131,23 @@ dataset = ExcelImageDataset('C:\\Users\\sburk\\PycharmProjects\\archive\\VanGogh
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
 ]))
 
-# Define the dataloader
+# # Load the dataset using the ExcelImageDataset class
+# dataset = ExcelImageDataset('C:\\Users\\sburk\\PycharmProjects\\archive\\VanGoghPaintings.xlsx', 'image_path', transform=transforms.Compose([
+#     transforms.Resize(32),
+#     transforms.CenterCrop(32),
+#     transforms.ToTensor(),
+#     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+# ]))
+
+# Define the dataloader (Batch = 32 images taken. Shuffle means taken at random or not)
 dataloader = DataLoader(dataset, batch_size=32, shuffle=True) # og batch size 32
 
+image_count = 0
+
+prev_time = 0;
+
 # Training loop
-for epoch in range(5): # 200 og number of epochs
+for epoch in range(100): # 200 og number of epochs
     for i, real_images in enumerate(dataloader):
 
         # Generate a batch of fake images
@@ -126,10 +181,83 @@ for epoch in range(5): # 200 og number of epochs
 
         # Output training progress
         if i % 10 == 0:
-            print(f"[Epoch {epoch}/{5}] [Batch {i}/{len(dataloader)}] [D loss: {d_loss.item()}] [G loss: {g_loss.item()}]")
+            print(f"[Epoch {epoch}/{100}] [Batch {i}/{len(dataloader)}] [D loss: {d_loss.item()}] [G loss: {g_loss.item()}]")
 
         # Save generated images
        # if epoch % 20 == 0 and i == 0:
         if i % 100 == 0:
-            save_image(fake_images.data[:10], f"C:\\Users\\sburk\\PycharmProjects\\GAN-artgen-vangogh-AIproject\\image_output\\{epoch}.png", nrow=5, normalize=True)
+            time = datetime.datetime.now()
+            current_time = time.strftime("%Y-%m-%d %H:%M:%S.%f")
+            save_image(fake_images.data[:25],
+                       f"C:\\Users\\sburk\\PycharmProjects\\GAN-artgen-vangogh-AIproject\\image_output\\epoch_{epoch}_image_{image_count}.png",
+                       nrow=5, normalize=True)
+            image_count += 1;
+            print(f"Image created at [Time: {current_time}]")
 
+            # save_image(fake_images.data[:25], f"C:\\Users\\sburk\\PycharmProjects\\GAN-artgen-vangogh-AIproject\\image_output\\{epoch}.png", nrow=5, normalize=True)
+# # Training loop with image loop retaining
+# generated_images = []
+# training_data = []
+# image_names = []
+# num_epochs = 200
+#
+# for epoch in range(num_epochs):
+#     for i, imgs in enumerate(dataloader):
+#         # Adversarial ground truths
+#         valid = torch.ones(imgs.size(0), 1)
+#         fake = torch.zeros(imgs.size(0), 1)
+#
+#         # Configure input
+#         real_imgs = imgs
+#
+#         # -----------------
+#         # Train Generator
+#         # -----------------
+#
+#         optimizer_G.zero_grad()
+#
+#         # Sample noise
+#         z = torch.randn(imgs.shape[0], 100)
+#
+#         # Generate a batch of images
+#         gen_imgs = generator(z)
+#
+#         # Loss measures generator's ability to fool the discriminator
+#         g_loss = adversarial_loss(discriminator(gen_imgs), valid)
+#
+#         g_loss.backward()
+#         optimizer_G.step()
+#
+#         # ---------------------
+#         # Train Discriminator
+#         # ---------------------
+#
+#         optimizer_D.zero_grad()
+#
+#         # Measure discriminator's ability to classify real from generated samples
+#         real_loss = adversarial_loss(discriminator(real_imgs), valid)
+#         fake_loss = adversarial_loss(discriminator(gen_imgs.detach()), fake)
+#         d_loss = (real_loss + fake_loss) / 2
+#
+#         d_loss.backward()
+#         optimizer_D.step()
+#
+#         # Append the training data
+#         training_data.append(imgs)
+#
+#         # Print training progress
+#         print(f"[Epoch {epoch + 1}/{num_epochs}] [D loss: {d_loss.item()}] [G loss: {g_loss.item()}]")
+#
+#         # Save generated images for this epoch
+#         if (epoch + 1) % 5 == 0:
+#             with torch.no_grad():
+#                 z = torch.randn(32, 100)
+#                 gen_imgs = generator(z)
+#                 generated_images.append(gen_imgs)
+#
+#                 # Save generated images as PNG files
+#                 for j, gen_img in enumerate(gen_imgs):
+#                     file_name = f"epoch_{epoch + 1}_image_{j + 1}.png"
+#                     file_name = f"C:\\Users\\sburk\\PycharmProjects\\GAN-artgen-vangogh-AIproject\\image_output\\epoch_{epoch + 1}_image_{j + 1}.png"
+#                     save_image((gen_img * 0.5) + 0.5, file_name)
+#                     image_names.append(file_name)
