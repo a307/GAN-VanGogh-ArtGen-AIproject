@@ -86,9 +86,8 @@ for epoch in range(num_epoch): # 200 og number of epochs
                            nrow=5, normalize=True)
                 image_count += 1;
                 print(f"Image created at [Time: {current_time}]")
-                if epoch != 0:
+                if epoch != 0: # time differnece
                     prev_time = time - prev_time
-                    # print(f"Difference from previous: {prev_time}")
                     minutes_diff = str(prev_time.total_seconds() // 60)
                     minutes = float(minutes_diff) * 60
                     seconds_diff = str(prev_time.seconds - minutes)
