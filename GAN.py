@@ -144,7 +144,8 @@ dataloader = DataLoader(dataset, batch_size=32, shuffle=True) # og batch size 32
 
 image_count = 0
 
-prev_time = 0;
+time1 = datetime.datetime.now()
+prev_time = datetime.datetime.now()
 
 # Training loop
 for epoch in range(100): # 200 og number of epochs
@@ -193,6 +194,16 @@ for epoch in range(100): # 200 og number of epochs
                        nrow=5, normalize=True)
             image_count += 1;
             print(f"Image created at [Time: {current_time}]")
+            if epoch != 0:
+                prev_time = time - prev_time
+                # print(f"Difference from previous: {prev_time}")
+                minutes_diff = str(prev_time.total_seconds() // 60)
+                minutes = float(minutes_diff) * 60
+                seconds_diff = str(prev_time.seconds - minutes)
+                output = "Time elapsed: "+ minutes_diff + " minutes, " + seconds_diff + " seconds, " + str(
+                    prev_time.microseconds) + " microseconds"
+                print(output)
+            prev_time = time
 
             # save_image(fake_images.data[:25], f"C:\\Users\\sburk\\PycharmProjects\\GAN-artgen-vangogh-AIproject\\image_output\\{epoch}.png", nrow=5, normalize=True)
 # # Training loop with image loop retaining
