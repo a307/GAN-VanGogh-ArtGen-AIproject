@@ -20,7 +20,8 @@ optimizer_G = optim.Adam(generator.parameters(), lr=0.0002, betas=(0.5, 0.999))
 optimizer_D = optim.Adam(discriminator.parameters(), lr=0.0002, betas=(0.5, 0.999))
 
 # Load the dataset using the ExcelImageDataset class
-dataset = ExcelImageDataset('C:\\Users\\sburk\\PycharmProjects\\archive\\VanGoghPaintings.xlsx', 'image_path', transform = transforms.Compose([
+dataset = ExcelImageDataset('C:\\Users\\sburk\\PycharmProjects\\archive\\'
+                            'VanGoghPaintings.xlsx', 'image_path', transform=transforms.Compose([
     transforms.Resize(64),
     transforms.CenterCrop(64),
     transforms.ToTensor(),
@@ -36,7 +37,7 @@ time1 = datetime.datetime.now()
 prev_time = datetime.datetime.now()
 
 # set number of epochs system will run
-num_epoch = 200;
+num_epoch = 200
 
 # Training loop
 for epoch in range(num_epoch): # 200 og number of epochs
@@ -73,20 +74,21 @@ for epoch in range(num_epoch): # 200 og number of epochs
 
         # Output training progress
         if i % 10 == 0:
-            print(f"[Epoch {epoch}/{num_epoch}] [Batch {i}/{len(dataloader)}] [D loss: {d_loss.item()}] [G loss: {g_loss.item()}]")
+            print(f"[Epoch {epoch}/{num_epoch}] [Batch {i}/{len(dataloader)}]"
+                  f" [D loss: {d_loss.item()}] [G loss: {g_loss.item()}]")
 
-        # Save generated images
             # Save generated images
-            # if epoch % 20 == 0 and i == 0:
             if i % 100 == 0:
                 time = datetime.datetime.now()
                 current_time = time.strftime("%Y-%m-%d %H:%M:%S.%f")
                 save_image(fake_images.data[:25],
-                           f"C:\\Users\\sburk\\PycharmProjects\\GAN-artgen-vangogh-AIproject\\image_output\\epoch_{epoch}_image_{image_count}.png",
-                           nrow=5, normalize=True)
-                image_count += 1;
+                           f"C:\\Users\\sburk\\PycharmProjects\\GAN-artgen-vangogh-AIproject\\image_output\\"
+                           f"epoch_{epoch}_image_{image_count}.png", nrow=5, normalize=True)
+                image_count += 1
                 print(f"Image created at [Time: {current_time}]")
-                if epoch != 0: # time differnece
+
+                # time difference function (calculates the time elapsed from previous epoch)
+                if epoch != 0:
                     prev_time = time - prev_time
                     minutes_diff = str(prev_time.total_seconds() // 60)
                     minutes = float(minutes_diff) * 60
@@ -94,4 +96,5 @@ for epoch in range(num_epoch): # 200 og number of epochs
                     output = "Time elapsed: " + minutes_diff + " minutes, " + seconds_diff + " seconds, " + str(
                         prev_time.microseconds) + " microseconds"
                     print(output)
+
                 prev_time = time
