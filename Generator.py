@@ -21,4 +21,3 @@ class Generator(nn.Module):
         img = self.model(z).to(device)
         img = img.view(img.size(0), 3, 64, 64)
         return img
-

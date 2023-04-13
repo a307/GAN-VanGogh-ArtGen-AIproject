@@ -23,8 +23,15 @@ adversarial_loss = nn.BCELoss().to(device)
 optimizer_G = optim.Adam(generator.parameters(), lr=0.0002, betas=(0.5, 0.999))
 optimizer_D = optim.Adam(discriminator.parameters(), lr=0.0002, betas=(0.5, 0.999))
 
+
+
 # Load the dataset using the ExcelImageDataset class
-dataset = ExcelImageDataset('C:\\Users\\Isaiah\\PycharmProjects\\Archive\\VanGoghPaintings.xlsx', 'image_path', transform = transforms.Compose([
+
+# dataset = ExcelImageDataset('C:\\Users\\Isaiah\\PycharmProjects\\Archive\\'
+#                             'VanGoghPaintings.xlsx', 'image_path', transform = transforms.Compose([
+
+dataset = ExcelImageDataset('C:\\Users\\sburk\\PycharmProjects\\archive\\'
+                            'VanGoghPaintings.xlsx', 'image_path', transform=transforms.Compose([
     transforms.Resize(64),
     transforms.CenterCrop(64),
     transforms.ToTensor(),
@@ -75,12 +82,18 @@ for epoch in range(100): # 200 og number of epochs
             print(f"[Epoch {epoch}/{100}] [Batch {i}/{len(dataloader)}] [D loss: {d_loss.item()}] [G loss: {g_loss.item()}]")
 
         # Save generated images
-       # if epoch % 20 == 0 and i == 0:
         if i % 100 == 0:
             time = datetime.datetime.now()
             current_time = time.strftime("%Y-%m-%d %H:%M:%S.%f")
-            save_image(fake_images.data[:10], f"C:\\Users\\Isaiah\\PycharmProjects\\GAN-VanGogh-ArtGen-AIproject\\image_output\\{epoch}.png", nrow=5, normalize=True)
-            image_count += 1;
+
+            # save_image(fake_images.data[:10],
+            #            f"C:\\Users\\Isaiah\\PycharmProjects\\GAN-VanGogh-ArtGen-AIproject\\image_output\\"
+            #            f"{epoch}.png", nrow=5, normalize=True)
+
+            save_image(fake_images.data[:25],
+                       f"C:\\Users\\sburk\\PycharmProjects\\GAN-artgen-vangogh-AIproject\\image_output\\"
+                       f"epoch_{epoch}_image_{image_count}.png", nrow=5, normalize=True)
+            image_count += 1
             print(f"Image created at [Time: {current_time}]")
             if epoch != 0:
                 prev_time = time - prev_time
