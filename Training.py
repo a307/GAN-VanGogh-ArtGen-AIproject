@@ -9,8 +9,7 @@ from torch.utils.data import DataLoader
 from torchvision.utils import save_image
 import datetime
 
-# Check for GPU availability and set the device
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu") # Will set the device used to the GPU is cuda is working
 print("Using device: ", device)
 
 # Initialize the discriminator and generator network classes as well as link them to CPU/GPU
